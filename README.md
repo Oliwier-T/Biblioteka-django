@@ -12,15 +12,18 @@ Sposób uruchomienia:
 git clone https://github.com/Oliwier-T/Biblioteka-django.git
 cd Biblioteka-django
 
-2.Zainstalowanie zależności:
-pip install -r requirements.txt
-(Możliwe że plik requirements.txt trzeba przesunac do głównej ścieżki projektu)
+2.Utwórz i aktywuj wirtualne środowisko:
+python -m venv venv
+venv\Scripts\activate
 
-3.Wykonanie migracji:
+3.Zainstalowanie zależności:
+pip install -r requirements.txt
+
+4.Wykonanie migracji:
 python manage.py migrate
 
-4.Załadowanie danych testowych z ksiazki.json:
+5.Załadowanie danych testowych z ksiazki.json:
 python manage.py loaddata ksiazki.json
 
-5.Odpalenie serwera:
+6.Odpalenie serwera:
 python manage.py runserver
