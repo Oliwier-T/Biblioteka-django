@@ -14,6 +14,7 @@ cd Biblioteka-django
 
 2.Zainstalowanie zależności:
 pip install -r requirements.txt
+(Możliwe że plik requirements.txt trzeba przesunac do głównej ścieżki projektu)
 
 3.Wykonanie migracji:
 python manage.py migrate
