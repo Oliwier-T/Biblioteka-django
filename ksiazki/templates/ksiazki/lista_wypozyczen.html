@@ -1,0 +1,41 @@
+{% extends 'ksiazki/base.html' %}
+
+{% block title %}Lista wypożyczeń{% endblock %}
+
+{% block content %}
+<h1 class="mb-4 text-center">📚 Lista wypożyczeń</h1>
+
+{% if wypozyczenia %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Książka</th>
+            <th>Wypożyczający</th>
+            <th>Data wypożyczenia</th>
+            <th>Data zwrotu</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for wyp in wypozyczenia %}
+        <tr>
+            <td>{{ wyp.ksiazka.tytul }}</td>
+            <td>{{ wyp.uzytkownik.username }}</td>
+            <td>{{ wyp.data_wypozyczenia|date:"Y-m-d H:i" }}</td>
+            <td>
+              {% if user == wyp.uzytkownik or user.is_staff %}
+                  <form action="{% url 'cofnij_wypozyczenie' wyp.pk %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-warning btn-sm">Cofnij</button>
+                  </form>
+              {% endif %}
+            </td>
+
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted text-center">Brak wypożyczeń w bazie danych.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'ksiazki/base.html' %}
+
+{% block title %}Moja książka{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">📖 Moja wypożyczona książka</h2>
+
+{% if brak %}
+    <p class="text-muted text-center">Nie masz aktualnie żadnej wypożyczonej książki.</p>
+{% else %}
+    <div class="card p-4 shadow">
+        <h3>{{ ksiazka.tytul }}</h3>
+        <hr>
+        <div style="white-space: pre-wrap;">{{ ksiazka.tresc }}</div>
+    </div>
+{% endif %}
+{% endblock %}

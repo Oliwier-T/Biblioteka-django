@@ -1,0 +1,73 @@
+{% extends 'ksiazki/base.html' %}
+
+{% block title %}Lista książek{% endblock %}
+
+{% block content %}
+<h1 class="mb-4 text-center">📚 Lista książek</h1>
+    <h3 class="mb-4 text-center">Maksymalnie jedno wypozyczenie na użytkownika!</h3>
+
+{% if ksiazki %}
+    <div class="row g-4">
+        {% for ksiazka in ksiazki %}
+        <div class="col-sm-6 col-md-4">
+            <div class="card h-100 shadow-sm">
+                {% if ksiazka.obrazek %}
+                    <img src="{{ ksiazka.obrazek.url }}" alt="Okładka książki" class="obraz" >
+                {% else %}
+
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ ksiazka.tytul }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ ksiazka.autor }}</h6>
+                    <p class="card-text flex-grow-1">{{ ksiazka.opis|truncatewords:20 }}</p>
+                    <p class="card-text"><strong>Cena:</strong> {{ ksiazka.cena }} zł</p>
+                    <span class="badge {% if ksiazka.dostepna %}bg-success{% else %}bg-danger{% endif %} mb-3">
+                        {% if ksiazka.dostepna %}Dostępna{% else %}Wypożyczona{% endif %}
+                    </span>
+
+                    {% if user.is_staff %}
+
+                        <form action="{% url 'usun_ksiazke' ksiazka.pk %}" method="post" class="mt-auto">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm w-100">Usuń</button>
+                        </form>
+                    {% elif user.is_authenticated %}
+                       {% if ksiazka.czy_dostepna %}
+                           <form action="{% url 'wypozycz_ksiazke' ksiazka.pk %}" method="post" class="mt-auto">
+                               {% csrf_token %}
+                               <button type="submit" class="btn btn-primary btn-sm w-100">Wypożycz</button>
+                           </form>
+                       {% else %}
+                           <button class="btn btn-secondary btn-sm w-100 mt-auto" disabled>Wypożyczona</button>
+                       {% endif %}
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        {% if ksiazka.czy_dostepna %}
+                        {% else %}
+                            {% with wypozyczenia=ksiazka.wypozyczenie_set.all %}
+                                {% for w in wypozyczenia %}
+                                    {% if w.uzytkownik == user and not w.data_zwrotu %}
+                                        <a href="{% url 'podglad_ksiazki' ksiazka.pk %}"
+                                           class="btn btn-info btn-sm w-100">📖 Czytaj</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endwith %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if user.is_staff %}
+    <div class="text-center mt-4">
+        <a href="{% url 'dodaj_ksiazke' %}" class="btn btn-success">+ Dodaj książkę</a>
+    </div>
+    {% endif %}
+
+{% else %}
+    <p class="text-muted text-center">Brak książek w bazie danych.</p>
+{% endif %}
+{% endblock %}
+
